@@ -35,30 +35,14 @@ for outDirKey in config["out_dirs"]:
 ########################################
 # resource allocation
 ########################################
-threads = config["general"]["threads"]
+availThreads = config["general"]["threads"]
 availMem = config["general"]["memory"]
-
-if threads < len(config["samples"]):
-  nThreadsPerSample = threads
-
-else:
-  nThreadsPerSample = floor(threads / len(config["samples"]))
-
-
-if nThreadsPerSample == threads:
-  nMemPerSample = availMem
-
-else:
-  nMemPerSample = floor(availMem / len(config["samples"]))
 
 
 ########################################
 # rules
 ########################################
 def final_output(mode):
-  print(outDirs)
-  print(smplsNames)
-
   if mode == "namesort":
     return expand(
       f"{outDirs['atac']}/{{smpl}}/outs/namesorted.bam",
@@ -89,22 +73,18 @@ rule cellranger_count:
     fastqDir = config["paths"]["fastq_dir"],
     ref = config["paths"]["cellranger_ref_dir"]
 
-  threads: nThreadsPerSample
+  threads: availThreads["cellranger_count"]
   resources:
-    mem_mb = nMemPerSample
+    mem_mb = availMem["cellranger_count"]
 
   shell:
     """
-    (
-      cd {params.outDir}
       {params.cellrangerAtac} count \
-        --id={wildcards.smpl} \
+        --id=cr_out_{wildcards.smpl} \
         --reference={params.ref} \
         --fastqs={params.fastqDir} \
         --sample={wildcards.smpl} \
-        --localcores={threads} \
-        --localmem={resources.mem_mb}
-    )
+        --localcores={threads}
     """
 
 rule namesort:
@@ -114,9 +94,9 @@ rule namesort:
   output:
     outDirs["atac"] + "/{smpl}/outs/namesorted.bam"
   
-  threads: nThreadsPerSample
+  threads: availThreads["namesort"]
   resources:
-    mem_mb = nMemPerSample
+    mem_mb = availMem["namesort"]
   shell:
     "samtools sort -@ {threads} -n -o {output} -O bam {input}"
   
