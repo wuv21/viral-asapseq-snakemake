@@ -1,0 +1,26 @@
+paths:
+  fastq_dir: "/home/user/fastq"
+  cellranger_ref_dir: ""
+  cellranger_exe: ""
+
+out_dirs:
+  atac: "atac_out"
+  haystack: "haystack_out"
+
+files:
+  adt_catalog: "/home/user/run/totalseqA_barcodes.csv"
+  hto_catalog: "/home/user/run/totalseqAHashtag_barcodes.csv"
+  allowlist: "/home/user/run/3M-february-2018.rc.txt"
+
+general:
+  mode: "namesort"
+  threads: 4
+  memory: 120000
+  modes: ["adt", "hto"]
+  cbc: [0,0,16]
+  umi: [0,16,28]
+  tag: [1,0,15]
+  
+samples:
+  - Pool_A2
+
