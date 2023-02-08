@@ -1,0 +1,9 @@
+__default__:
+  - "-q normal"
+
+
+cellranger_count:
+  - "-q denovo"
+
+namesort:
+  - "-q denovo"
