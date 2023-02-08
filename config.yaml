@@ -1,25 +1,40 @@
 paths:
-  fastq_dir: ""
+  rna_fastq_dir: ""
   cellranger_ref_dir: ""
   cellranger_exe: "~/pkg/cellranger-atac-2.1.0/bin/cellranger-atac"
 
-out_dirs:
-  atac: "atac_out"
-  haystack: "haystack_out"
+  adt_fastq_dir: ""
 
-files:
   adt_catalog: ""
-  hto_catalog: ""
   allowlist: ""
 
+out_dirs:
+  atac: "." # due to cellranger settings, this cannot be currently changed.
+  haystack: "haystack_out"
+  adt: "adt_out"
+
 general:
-  mode: "namesort"
+  run_modes:
+    atac: True # boolean
+    atac_level: "namesort" # must be namesort or hhayystack
+    adt: False # boolean
+
+  library:  
+    cbc: [0,0,16]
+    umi: [0,16,28]
+    tag: [1,0,15]
+    
   threads:
     cellranger_count: 12
     namesort: 8
+    make_bus: 4
+    sort_bus: 8
+    
   memory:
     cellranger_count: 120000
     namesort: 96000
+    make_bus: 36000
+
 
 samples:
   - ""
