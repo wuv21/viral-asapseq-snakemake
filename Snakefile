@@ -19,7 +19,7 @@ for inKey in config["paths"]:
 
 
 ###############################################################################
-# make all out directories
+# make all out directories if needed
 ###############################################################################
 outDirs = defaultdict(str)
 for outDirKey in config["out_dirs"]:
@@ -44,10 +44,29 @@ availMem = config["general"]["memory"]
 def final_output(modes):
   outs = []
 
-  # TODO run checks....
-
+  # file check
   if not modes["atac"] and not modes["adt"]:
-    sys.exit("ATAC and adt modes are both turned off")
+    raise Exception("ATAC and adt modes are both turned off")
+
+  if modes["atac"]:
+    if not os.path.exists(inputPaths["atac_fastq_dir"]):
+      raise Exception("ATAC fastq directory does not exist.")
+
+    if not os.path.exists(inputPaths["cellranger_ref_dir"]):
+      raise Exception("No cellranger-atac genome reference exists.")
+
+    if not os.path.exists(inputPaths["cellranger_exe"]):
+      raise Exception("No cellranger-atac executable exists.")
+
+  if modes["adt"]:
+    if not os.path.exists(inputPaths["adt_fastq_dir"]):
+      raise Exception("ADT fastq directory does not exist.")
+
+    if not os.path.exists(inputPaths["adt_catalog"]):
+      raise Exception("No catalog of ADT tags/oligos exists.")
+
+    if not os.path.exists(inputPaths["allowlist"]):
+      raise Exception("No cell barcode allowlist exists.")
 
   # atac outs
   if modes["atac"] and modes["atac_level"] == "namesort":
@@ -89,7 +108,7 @@ rule cellranger_count:
   params:
     outDir = outDirs["atac"],
     cellrangerAtac = config["paths"]["cellranger_exe"],
-    fastqDir = config["paths"]["rna_fastq_dir"],
+    fastqDir = config["paths"]["atac_fastq_dir"],
     ref = config["paths"]["cellranger_ref_dir"]
   threads: availThreads["cellranger_count"]
   resources:
@@ -144,7 +163,7 @@ rule make_index:
 
 
 def get_sample_fastqs(wildcards):
-  inputs = [inPath["adt_fastq_dir"] + "/" + x for x in config["samples"]["adt_fastqs"][wildcards.smpl]]
+  inputs = [inputPaths["adt_fastq_dir"] + "/" + x for x in config["samples"]["adt_fastqs"][wildcards.smpl]]
 
   return(inputs)
 
@@ -176,7 +195,7 @@ rule correct_cbc:
   output:
     rules.make_bus.params.out_dir + "output.corrected.bus"
   params:
-    allowlist = inPath["allowlist"]
+    allowlist = inputPaths["allowlist"]
   shell:
     "bustools correct -w {params.allowlist} -o {output} {input} "
 

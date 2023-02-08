@@ -1,10 +1,9 @@
 paths:
-  rna_fastq_dir: ""
+  atac_fastq_dir: ""
   cellranger_ref_dir: ""
   cellranger_exe: "~/pkg/cellranger-atac-2.1.0/bin/cellranger-atac"
 
   adt_fastq_dir: ""
-
   adt_catalog: ""
   allowlist: ""
 
@@ -29,7 +28,7 @@ general:
     namesort: 8
     make_bus: 4
     sort_bus: 8
-    
+
   memory:
     cellranger_count: 120000
     namesort: 96000
