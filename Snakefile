@@ -4,9 +4,10 @@ import re
 import sys
 from collections import defaultdict
 
-smplsNames = config["samples"].keys()
+smplsNames = [x['name'] for x in config["samples"]]
+
 snakefileDir = os.path.dirname(workflow.snakefile)
-scriptDir = snakeFileDir + "scripts/"
+scriptDir = snakefileDir + "scripts/"
 
 ###############################################################################
 # input paths dict
@@ -72,7 +73,7 @@ def final_output(modes):
   if modes["atac"] and modes["atac_level"] == "namesort":
     outs.append(
       expand(
-        f"{outDirs['atac']}/{{smpl}}/outs/namesorted.bam",
+        f"cr_out_{{smpl}}/outs/namesorted.bam",
         smpl = smplsNames))
 
   elif modes["atac"] and modes["atac_level"] == "haystack":
@@ -104,9 +105,8 @@ rule all:
 ###############################################################################
 rule cellranger_count:
   output:
-     outDirs["atac"] + "/{smpl}/outs/possorted_bam.bam"
+     "cr_out_{smpl}/outs/possorted_bam.bam"
   params:
-    outDir = outDirs["atac"],
     cellrangerAtac = config["paths"]["cellranger_exe"],
     fastqDir = config["paths"]["atac_fastq_dir"],
     ref = config["paths"]["cellranger_ref_dir"]
@@ -127,7 +127,7 @@ rule namesort:
   input:
     rules.cellranger_count.output
   output:
-    outDirs["atac"] + "/{smpl}/outs/namesorted.bam"
+    "cr_out_{smpl}/outs/namesorted.bam"
   threads: availThreads["namesort"]
   resources:
     mem_mb = availMem["namesort"]
@@ -178,9 +178,9 @@ rule make_bus:
   output:
     bus = outDirs["adt"] + "/{smpl}_output_bus/output.bus"
   params:
-    cbc = convert_list_to_bus_params(config["general_settings"]["cbc"]),
-    umi = convert_list_to_bus_params(config["general_settings"]["umi"]),
-    tag = convert_list_to_bus_params(config["general_settings"]["tag"]),
+    cbc = convert_list_to_bus_params(config["general"]["library"]["cbc"]),
+    umi = convert_list_to_bus_params(config["general"]["library"]["umi"]),
+    tag = convert_list_to_bus_params(config["general"]["library"]["tag"]),
     out_dir = outDirs["adt"] + "/{smpl}_output_bus/",
   threads: availThreads["make_bus"]
   resources:
