@@ -4,10 +4,11 @@ import re
 import sys
 from collections import defaultdict
 
-smplsNames = [x['name'] for x in config["samples"]]
+smplsDict = {x['name']: x for x in config["samples"]}
+smplsNames = smplsDict.keys()
 
 snakefileDir = os.path.dirname(workflow.snakefile)
-scriptDir = snakefileDir + "scripts/"
+scriptDir = snakefileDir + "/scripts/"
 
 ###############################################################################
 # input paths dict
@@ -105,7 +106,8 @@ rule all:
 ###############################################################################
 rule cellranger_count:
   output:
-     "cr_out_{smpl}/outs/possorted_bam.bam"
+    touch("tmp/{smpl}_cr_count.done")
+     #"cr_out_{smpl}/outs/possorted_bam.bam"
   params:
     cellrangerAtac = config["paths"]["cellranger_exe"],
     fastqDir = config["paths"]["atac_fastq_dir"],
@@ -132,7 +134,7 @@ rule namesort:
   resources:
     mem_mb = availMem["namesort"]
   shell:
-    "samtools sort -@ {threads} -n -o {output} -O bam {input}"
+    "samtools sort -@ {threads} -n -o {output} -O bam cr_out_{wildcards.smpl}/outs/possorted_bam.bam"
   
 
 ###############################################################################
@@ -146,7 +148,7 @@ rule build_preIndex:
     t2g = outDirs["adt"] + "/adt.t2g",
     fa = outDirs["adt"] + "/adt.fa"
   params:
-    feat_map = scriptDir + "/featuremap.py"
+    feat_map = scriptDir + "featuremap.py"
   shell:
     "python {params.feat_map} {input} --t2g {output.t2g} --fa {output.fa}"
 
@@ -163,7 +165,7 @@ rule make_index:
 
 
 def get_sample_fastqs(wildcards):
-  inputs = [inputPaths["adt_fastq_dir"] + "/" + x for x in config["samples"]["adt_fastqs"][wildcards.smpl]]
+  inputs = [inputPaths["adt_fastq_dir"] + "/" + x for x in smplsDict[wildcards.smpl]["adt_fastqs"]]
 
   return(inputs)
 

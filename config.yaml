@@ -18,11 +18,11 @@ general:
     atac_level: "namesort" # must be namesort or hhayystack
     adt: False # boolean
 
-  library:  
-    cbc: [0,0,16]
-    umi: [0,16,28]
-    tag: [1,0,15]
-    
+  library:
+    cbc: [1,0,16]
+    umi: [0,0,10]
+    tag: [2,0,15]
+
   threads:
     cellranger_count: 12
     namesort: 8
@@ -34,7 +34,6 @@ general:
     namesort: 96000
     make_bus: 36000
 
-
 samples:
-  - ""
-
+  - name: "A"
+    adt_fastqs: ["A_S2_R1_001.fastq.gz", "A_S2_R2_001.fastq.gz", "A_S2_R3_001.fastq.gz"]
