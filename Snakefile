@@ -77,6 +77,11 @@ def final_output(modes):
         f"cr_out_{{smpl}}/outs/namesorted.bam",
         smpl = smplsNames))
 
+    outs.append(
+      expand(
+        f"{outDirs['amulet']}/{{smpl}}/MultipletBarcodes_01.txt",
+        smpl = smplsNames))
+
   elif modes["atac"] and modes["atac_level"] == "haystack":
     outs.append(
       expand(
@@ -106,8 +111,7 @@ rule all:
 ###############################################################################
 rule cellranger_count:
   output:
-    touch("tmp/{smpl}_cr_count.done")
-     #"cr_out_{smpl}/outs/possorted_bam.bam"
+    touch(".snek_cr/{smpl}_cr_count.done")
   params:
     cellrangerAtac = config["paths"]["cellranger_exe"],
     fastqDir = config["paths"]["atac_fastq_dir"],
@@ -135,7 +139,28 @@ rule namesort:
     mem_mb = availMem["namesort"]
   shell:
     "samtools sort -@ {threads} -n -o {output} -O bam cr_out_{wildcards.smpl}/outs/possorted_bam.bam"
-  
+
+
+rule amulet:
+  input:
+    rules.cellranger_count.output
+  output:
+    "amulet_out/{smpl}/" + "MultipletBarcodes_01.txt"
+  params:
+    amulet_dir = config["paths"]["amulet_dir"],
+    autosomes = config["paths"]["autosomes"],
+    denylist = config["paths"]["denylist"]
+  shell:
+    """
+    {params.amulet_dir}/AMULET.sh \
+      cr_out_{wildcards.smpl}/outs/fragments.tsv.gz \
+      cr_out_{wildcards.smpl}/outs/singlecell.csv \
+      {params.autosomes} \
+      {params.denylist} \
+      amulet_out/{wildcards.smpl}/ \
+      {params.amulet_dir}
+    """
+
 
 ###############################################################################
 # adt rules

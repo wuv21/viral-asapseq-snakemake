@@ -6,11 +6,15 @@ paths:
   adt_fastq_dir: ""
   adt_catalog: ""
   allowlist: ""
+  amulet_dir: "~/pkg/AMULET"
+  autosomes: ""
+  denylist: ""
 
 out_dirs:
   atac: "." # due to cellranger settings, this cannot be currently changed.
   haystack: "haystack_out"
   adt: "adt_out"
+  amulet: "amulet_out"
 
 general:
   run_modes:
