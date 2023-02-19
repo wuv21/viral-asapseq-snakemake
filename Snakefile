@@ -150,6 +150,9 @@ rule amulet:
     amulet_dir = config["paths"]["amulet_dir"],
     autosomes = config["paths"]["autosomes"],
     denylist = config["paths"]["denylist"]
+  threads: availThreads["amulet"]
+  resources:
+    mem_mb = availMem["amulet"]
   shell:
     """
     {params.amulet_dir}/AMULET.sh \
@@ -157,7 +160,7 @@ rule amulet:
       cr_out_{wildcards.smpl}/outs/singlecell.csv \
       {params.autosomes} \
       {params.denylist} \
-      amulet_out/{wildcards.smpl}/ \
+      amulet_out/{wildcards.smpl} \
       {params.amulet_dir}
     """
 

@@ -32,11 +32,13 @@ general:
     namesort: 8
     make_bus: 4
     sort_bus: 8
+    amulet: 2
 
   memory:
     cellranger_count: 120000
     namesort: 96000
     make_bus: 36000
+    amulet: 36000
 
 samples:
   - name: "A"
