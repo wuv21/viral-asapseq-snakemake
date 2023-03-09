@@ -18,22 +18,26 @@ Example configuration is shown below.
 paths:
   atac_fastq_dir: ""
   cellranger_ref_dir: ""
-  cellranger_exe: "~/pkg/cellranger-atac-2.1.0/bin/cellranger-atac"
-
+  cellranger_exe: "/home/wuv/pkg/cellranger-atac-2.1.0/bin/cellranger-atac"
   adt_fastq_dir: ""
-  adt_catalog: ""
-  allowlist: ""
+  adt_catalog: "adt_panel.csv"
+  allowlist: "737K-cratac-v1.revcomp.txt"
+  amulet_dir: "AMULET"
+  autosomes: "hg38_autosomes.txt"
+  denylist: "hglft_genome_411bb_f9b580.bed"
+
 
 out_dirs:
-  atac: "." # due to cellranger settings, this cannot be currently changed.
+  atac: "." # this currently cannot be changed
   haystack: "haystack_out"
   adt: "adt_out"
+  amulet: "amulet_out"
 
 general:
   run_modes:
-    atac: True # boolean
-    atac_level: "namesort" # must be namesort or haystack
-    adt: False # boolean
+    atac: True
+    atac_level: "namesort"
+    adt: True
 
   library:
     cbc: [1,0,16]
@@ -45,11 +49,13 @@ general:
     namesort: 8
     make_bus: 4
     sort_bus: 8
+    amulet: 2
 
   memory:
     cellranger_count: 120000
     namesort: 96000
     make_bus: 36000
+    amulet: 36000
 
 samples:
   - name: "A"
