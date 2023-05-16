@@ -108,3 +108,4 @@ t2g_path = args.t2g
 fasta_path= args.fa
 
 kite_mismatch_maps(tags, t2g_path, fasta_path)
+
