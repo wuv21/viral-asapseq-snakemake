@@ -1,0 +1,57 @@
+name: Continuous Integration
+
+on:
+    pull_request:
+        branches:
+          - main
+    push: # Any push to any branch
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout Changes
+            uses: actions/checkout@v2
+            with:
+                repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+                ref: ${{ github.event.pull_request.head.sha || github.event.ref }}
+                fetch-depth: 0
+                path: pr
+          - name: Checkout Main
+            uses: actions/checkout@v2
+            with:
+                repository: wuv21/viral-asapseq-snakemake
+                ref: main
+                path: main
+          - name: Install Conda Packages for PR
+            uses: mamba-org/provision-with-micromamba@main
+            with:
+                environment-file: pr/env.yml
+                environment-name: pr
+          - name: Install Conda Packages for Main
+            uses: mamba-org/provision-with-micromamba@main
+            with:
+                environment-file: main/env.yml
+                environment-name: main
+          - name: Run PR convertSamplesheetToConfigSamples
+            run: |
+                mamba activate pr
+                ./pr/scripts/convertSamplesheetToConfigSamples.py -s main/data/test.csv > pr-test-config.yaml
+          - name: Run Main convertSamplesheetToConfigSamples
+            run: |
+                mamba activate main
+                ./main/scripts/convertSamplesheetToConfigSamples.py -s main/data/test.csv > main-test-config.yaml
+          - name: Determine Differences
+            run: |
+                diff pr-test-config.yaml main-test-config.yaml > diff.txt
+                if [ -s diff.txt ]
+                then
+                    echo "Differences found"
+                    exit 1
+                else
+                    echo "No differences found"
+                fi
+          - name: Output Differences
+            if: failure()
+            run: |
+                cat diff.txt

@@ -1,0 +1,17 @@
+[Header],,,
+IEMFileVersion,4,,
+Investigator Name,Vincent Wu,,
+Experiment Name,ASAPseq_test,,
+Date,20230516,,
+Workflow,GenerateFASTQ,,
+,,,
+[Reads],,,
+24,,,
+24,,,
+,,,
+[Data],,,
+Sample_ID,Sample_Name,index,
+someothertest_1,,ATCACG
+test_A,,CGATGT
+test_B,,TTAGGC
+test_C,,TGACCA
