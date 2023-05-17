@@ -21,7 +21,9 @@ jobs:
           with:
               environment-file: env.yml
         - name: Run PR convertSamplesheetToConfigSamples
-          run: ./scripts/convertSamplesheetToConfigSamples.py -s data/test.csv > data/pr-test-config.yaml
+          run: |
+            chmod +x ./scripts/convertSamplesheetToConfigSamples.py
+            ./scripts/convertSamplesheetToConfigSamples.py -s data/test.csv > data/pr-test-config.yaml
         - name: Upload Artifacts
           uses: actions/upload-artifact@v2
           with:
@@ -40,7 +42,9 @@ jobs:
           with:
               environment-file: env.yml
         - name: Run Main convertSamplesheetToConfigSamples
-          run: ./scripts/convertSamplesheetToConfigSamples.py -s data/test.csv > data/main-test-config.yaml
+          run: |
+            chmod +x ./scripts/convertSamplesheetToConfigSamples.py
+            ./scripts/convertSamplesheetToConfigSamples.py -s data/test.csv > data/main-test-config.yaml
         - name: Upload Artifacts
           uses: actions/upload-artifact@v2
           with:
