@@ -23,22 +23,23 @@ jobs:
                 repository: wuv21/viral-asapseq-snakemake
                 ref: main
                 path: main
-          - name: Install Miniconda
-            uses: conda-incubator/setup-miniconda@v2
+          - name: Install Conda Packages for PR
+            uses: mamba-org/provision-with-micromamba@main
             with:
-                miniconda-version: latest
-                python-version: 3.8
-          - name: Install Environments
-            run: |
-                conda env create -f pr/env.yml -n pr
-                conda env create -f main/env.yml -n main
+                environment-file: pr/environment.yaml
+                environment-name: pr
+          - name: Install Conda Packages for Main
+            uses: mamba-org/provision-with-micromamba@main
+            with:
+                environment-file: main/environment.yaml
+                environment-name: main
           - name: Run PR convertSamplesheetToConfigSamples
             run: |
-                conda activate pr
+                mamba activate pr
                 ./pr/scripts/convertSamplesheetToConfigSamples.py -s main/data/test.csv > pr-test-config.yaml
           - name: Run Main convertSamplesheetToConfigSamples
             run: |
-                conda activate main
+                mamba activate main
                 ./main/scripts/convertSamplesheetToConfigSamples.py -s main/data/test.csv > main-test-config.yaml
           - name: Determine Differences
             run: |
