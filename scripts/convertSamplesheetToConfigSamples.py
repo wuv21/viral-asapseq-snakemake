@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import argparse
 import csv
 import os.path
@@ -129,4 +130,4 @@ if __name__ == '__main__':
   if not os.path.exists(args.samplesheet):
     raise Exception("Samplesheet not found")
 
-main(args)
+  main(args)

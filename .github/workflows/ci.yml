@@ -1,0 +1,49 @@
+name: Continuous Integration
+
+on:
+    pull_request:
+        branches:
+          - main
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout Pull Request
+            uses: actions/checkout@v2
+            with:
+                ref: ${{ github.event.pull_request.head.sha }}
+                fetch-depth: 0
+                path: pr
+          - name: Checkout Main
+            uses: actions/checkout@v2
+            with:
+                ref: main
+                path: main
+          - name: Install Miniconda
+            uses: conda-incubator/setup-miniconda@v2
+            with:
+                miniconda-version: latest
+                python-version: 3.8
+          - name: Install Environments
+            run: |
+                conda env create -f pr/env.yml -n pr
+                conda env create -f main/env.yml -n main
+          - name: Run PR convertSamplesheetToConfigSamples
+            run: |
+                conda activate pr
+                ./pr/scripts/convertSamplesheetToConfigSamples.py -s main/data/test.csv > pr-test-config.yaml
+          - name: Run Main convertSamplesheetToConfigSamples
+            run: |
+                conda activate main
+                ./main/scripts/convertSamplesheetToConfigSamples.py -s main/data/test.csv > main-test-config.yaml
+          - name: Determine Differences
+            run: |
+                diff pr-test-config.yaml main-test-config.yaml > diff.txt
+                if [ -s diff.txt ]
+                then
+                    echo "Differences found"
+                    exit 1
+                else
+                    echo "No differences found"
+                fi
