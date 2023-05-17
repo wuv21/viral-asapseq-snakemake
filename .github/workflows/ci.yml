@@ -4,20 +4,23 @@ on:
     pull_request:
         branches:
           - main
+    push: # Any push to any branch
 
 jobs:
     test:
         runs-on: ubuntu-latest
         steps:
-          - name: Checkout Pull Request
+          - name: Checkout Changes
             uses: actions/checkout@v2
             with:
+                repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
                 ref: ${{ github.event.pull_request.head.sha }}
                 fetch-depth: 0
                 path: pr
           - name: Checkout Main
             uses: actions/checkout@v2
             with:
+                repository: wuv21/viral-asapseq-snakemake
                 ref: main
                 path: main
           - name: Install Miniconda
@@ -47,3 +50,7 @@ jobs:
                 else
                     echo "No differences found"
                 fi
+          - name: Output Differences
+            if: failure()
+            run: |
+                cat diff.txt
