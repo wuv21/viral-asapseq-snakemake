@@ -90,7 +90,7 @@ Output:
 '''
 def generateSample(**samples: dict):
   # Get name by truncating the postfix of any of the samples
-  generalSampleName = samples[list(samples.keys())[0]]["sample_name"].replace(r"_\w+$", "")
+  generalSampleName = "_".join(samples[list(samples.keys())[0]]["sample_name"].split("_")[0:-1])
 
   sampleConf = f'''\
     - name: "{generalSampleName}"'''
