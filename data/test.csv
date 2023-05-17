@@ -10,8 +10,8 @@ Workflow,GenerateFASTQ,,
 24,,,
 ,,,
 [Data],,,
-Sample_ID,Sample_Name,index,
-sample1_ADT,0,ATCACG
-sample1_ADT,1,CGATGT
-sample1_HTO,0,TTAGGC
-sample1_HTO,1,TGACCA
+Sample_ID,Sample_Name,index,seq
+sample1_ADT,0,,ATCACG
+sample1_ADT,1,,CGATGT
+sample1_HTO,0,,TTAGGC
+sample1_HTO,1,,TGACCA
