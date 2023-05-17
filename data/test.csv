@@ -11,7 +11,7 @@ Workflow,GenerateFASTQ,,
 ,,,
 [Data],,,
 Sample_ID,Sample_Name,index,
-someothertest_1,,ATCACG
-test_A,,CGATGT
-test_B,,TTAGGC
-test_C,,TGACCA
+sample1_ADT,0,ATCACG
+sample1_ADT,1,CGATGT
+sample1_HTO,0,TTAGGC
+sample1_HTO,1,TGACCA
