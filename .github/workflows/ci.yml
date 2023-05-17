@@ -26,12 +26,12 @@ jobs:
           - name: Install Conda Packages for PR
             uses: mamba-org/provision-with-micromamba@main
             with:
-                environment-file: pr/env.yaml
+                environment-file: pr/env.yml
                 environment-name: pr
           - name: Install Conda Packages for Main
             uses: mamba-org/provision-with-micromamba@main
             with:
-                environment-file: main/env.yaml
+                environment-file: main/env.yml
                 environment-name: main
           - name: Run PR convertSamplesheetToConfigSamples
             run: |
