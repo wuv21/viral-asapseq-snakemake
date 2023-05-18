@@ -90,17 +90,17 @@ Output:
 '''
 def generateSample(**samples: dict):
   # Get name by truncating the postfix of any of the samples
-  generalSampleName = samples[samples.keys()[0]]["sample_name"].replace(r"_\w+$", "")
+  generalSampleName = "_".join(samples[list(samples.keys())[0]]["sample_name"].split("_")[0:-1])
 
-  sample = f'''\
+  sampleConf = f'''\
     - name: "{generalSampleName}"'''
   
   for sample in samples:
     sampleName = samples[sample]["sample_name"]
     sampleNumber = samples[sample]["sample_number"]
-    sample += f'''\n      {sample.lower()}_fastqs: ["{sampleName}_S{sampleNumber}_R1_001.fastq.gz", "{sampleName}_S{sampleNumber}_R3_001.fastq.gz"]'''
+    sampleConf += f'''\n      {sample.lower()}_fastqs: ["{sampleName}_S{sampleNumber}_R1_001.fastq.gz", "{sampleName}_S{sampleNumber}_R3_001.fastq.gz"]'''
   
-  return sample
+  return sampleConf
 
 '''
 Main function
