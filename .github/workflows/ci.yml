@@ -68,7 +68,7 @@ jobs:
               path: data
         - name: Determine Differences
           run: |
-              diff pr-test-config.yaml main-test-config.yaml > diff.txt
+              diff data/pr-test-config.yaml data/main-test-config.yaml > diff.txt
               if [ -s diff.txt ]
               then
                   echo "Differences found"
