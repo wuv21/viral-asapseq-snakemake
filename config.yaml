@@ -40,6 +40,9 @@ general:
     make_bus: 36000
     amulet: 36000
 
+amulet_settings:
+  overlap: 2
+
 samples:
   - name: "A"
     adt_fastqs: ["A_S2_R1_001.fastq.gz", "A_S2_R2_001.fastq.gz", "A_S2_R3_001.fastq.gz"]

@@ -147,7 +147,8 @@ rule amulet:
   params:
     amulet_dir = config["paths"]["amulet_dir"],
     autosomes = config["paths"]["autosomes"],
-    denylist = config["paths"]["denylist"]
+    denylist = config["paths"]["denylist"],
+    overlap = config["amulet_settings"]["overlap"]
   threads: availThreads["amulet"]
   resources:
     mem_mb = availMem["amulet"]
@@ -159,7 +160,8 @@ rule amulet:
       {params.autosomes} \
       {params.denylist} \
       amulet_out/{wildcards.smpl} \
-      {params.amulet_dir}
+      {params.amulet_dir} \
+      --expectedoverlap={params.overlap}
     """
 
 
