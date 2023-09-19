@@ -155,7 +155,7 @@ rule amulet:
   shell:
     """
     {params.amulet_dir}/AMULET.sh \
-      --expectedoverlap={params.overlap} \
+      --expectedoverlap {params.overlap} \
       cr_out_{wildcards.smpl}/outs/fragments.tsv.gz \
       cr_out_{wildcards.smpl}/outs/singlecell.csv \
       {params.autosomes} \
